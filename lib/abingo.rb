@@ -5,8 +5,8 @@
 
 class Abingo
 
-  @@VERSION = "1.0.0"
-  @@MAJOR_VERSION = "1.0"
+  @@VERSION = "4.0.0"
+  @@MAJOR_VERSION = "4.0"
   cattr_reader :VERSION
   cattr_reader :MAJOR_VERSION
 
