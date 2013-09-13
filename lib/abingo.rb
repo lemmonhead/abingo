@@ -2,13 +2,24 @@
 #Unless you're fiddling with implementation details, it is the only one you need worry about.
 
 #Usage of ABingo, including practical hints, is covered at http://www.bingocardcreator.com/abingo
+# require 'active_support/cache'
+require_relative 'abingo_sugar'
+require_relative 'abingo_view_helper'
+require_relative "abingo/controller/dashboard"
+require_relative "abingo/rails/controller/dashboard"
+require_relative "abingo/alternative"
+require_relative "abingo/experiment"
+require_relative "../generators/abingo_migration/abingo_migration_generator.rb"
+
+ActionController::Base.send :include, AbingoSugar
+ActionView::Base.send :include, AbingoViewHelper
 
 class Abingo
 
   @@VERSION = "4.0.0"
   @@MAJOR_VERSION = "4.0"
-  cattr_reader :VERSION
   cattr_reader :MAJOR_VERSION
+  cattr_reader :VERSION
 
   #Not strictly necessary, but eh, as long as I'm here.
   cattr_accessor :salt
@@ -33,7 +44,7 @@ class Abingo
   cattr_writer :cache
 
   def self.cache
-    @@cache || Rails.cache
+    @@cache || ::Rails.cache
   end
 
   #This method gives a unique identity to a user.  It can be absolutely anything
@@ -78,7 +89,7 @@ class Abingo
         while Abingo.cache.exist?(lock_key)
           sleep(0.1)
         end
-        break
+        
       end
       Abingo.cache.write(lock_key, 1, :expires_in => 5.seconds)
       conversion_name = options[:conversion] || options[:conversion_name]

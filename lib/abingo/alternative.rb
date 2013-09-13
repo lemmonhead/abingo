@@ -1,3 +1,6 @@
+require 'active_record'
+require_relative 'conversion_rate'
+
 class Abingo::Alternative < ActiveRecord::Base
   include Abingo::ConversionRate
 
@@ -11,13 +14,13 @@ class Abingo::Alternative < ActiveRecord::Base
   def self.score_conversion(test_name)
     viewed_alternative = Abingo.find_alternative_for_user(test_name,
       Abingo::Experiment.alternatives_for_test(test_name))
-    self.update_all("conversions = conversions + 1", :lookup => self.calculate_lookup(test_name, viewed_alternative))
+    self.where(lookup: self.calculate_lookup(test_name, viewed_alternative)).update_all("conversions = conversions + 1")
   end
 
   def self.score_participation(test_name)
     viewed_alternative = Abingo.find_alternative_for_user(test_name,
       Abingo::Experiment.alternatives_for_test(test_name))
-    self.update_all("participants = participants + 1", :lookup => self.calculate_lookup(test_name, viewed_alternative))
+    self.where(lookup: self.calculate_lookup(test_name, viewed_alternative)).update_all("participants = participants + 1")
   end
 
 end

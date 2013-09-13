@@ -1,3 +1,4 @@
+require 'action_controller'
 class Abingo
   module Controller
     module Dashboard

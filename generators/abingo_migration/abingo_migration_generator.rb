@@ -1,5 +1,7 @@
-class AbingoMigrationGenerator < Rails::Generator::Base
-  require 'abingo'
+require 'rails/generators'
+require 'rails/generators/active_record'
+
+class AbingoMigrationGenerator < Rails::Generators::Base
   
   def manifest
     record do |m|

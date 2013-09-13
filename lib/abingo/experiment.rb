@@ -1,3 +1,7 @@
+require 'active_record'
+require_relative 'statistics'
+require_relative 'conversion_rate'
+
 class Abingo::Experiment < ActiveRecord::Base
   include Abingo::Statistics
   include Abingo::ConversionRate
@@ -72,7 +76,7 @@ class Abingo::Experiment < ActiveRecord::Base
         cloned_alternatives_array -= [alt]
       end
       experiment.status = "Live"
-      experiment.save(false)  #Calling the validation here causes problems b/c of transaction.
+      experiment.save(validate: false)  #Calling the validation here causes problems b/c of transaction.
       Abingo.cache.write("Abingo::Experiment::exists(#{test_name})".gsub(" ", "_"), 1)
 
       #This might have issues in very, very high concurrency environments...
@@ -91,7 +95,7 @@ class Abingo::Experiment < ActiveRecord::Base
         alternative.lookup = "Experiment completed.  #{alternative.id}"
         alternative.save!
       end
-      update_attribute(:status, "Finished")
+      update_attribute(status: "Finished")
       Abingo.cache.write("Abingo::Experiment::short_circuit(#{test_name})".gsub(" ", "_"), final_alternative)
     end
   end
